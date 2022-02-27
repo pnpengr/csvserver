@@ -51,7 +51,7 @@ docker pull prom/prometheus:v2.22.0
         docker run -d -p 9393:9300 -e CSVSERVER_BORDER=Orange -v /tmp/solution/inputFile:/csvserver/inputdata infracloudio/csvserver:latest
 ###  Executed above command successfully and able to access page on http://10.0.0.12:9393/. It is showing csv data and welcome note as exepected.
  
-  
+### PART 2:
  
  
  
