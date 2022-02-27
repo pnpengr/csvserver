@@ -51,8 +51,28 @@ docker pull prom/prometheus:v2.22.0
         docker run -d -p 9393:9300 -e CSVSERVER_BORDER=Orange -v /tmp/solution/inputFile:/csvserver/inputdata infracloudio/csvserver:latest
 ###  Executed above command successfully and able to access page on http://10.0.0.12:9393/. It is showing csv data and welcome note as exepected.
  
-### PART 2:
- 
+### PART II:
+#### 1: Delete any containers running from the last part.
+        docker rmi infracloudio/csvserver:latest
+#### 2: Create a docker-compose.yaml file for the setup from part I.
+
+        version: "3.9"
+        services:
+          #Part - 2
+          csvserver:
+            hostname: csvserver
+            image: infracloudio/csvserver:latest
+            ports:
+              - "9393:9300"
+            volumes:
+              - ./inputFile:/csvserver/inputdata
+            environment:
+              - CSVSERVER_BORDER=Orange
+       
+#### 3:One should be able to run the application with docker-compose up.
+        docker-compose up -d
+        docker ps
+### Executed above command successfully and able to access page on http://10.0.0.12:9393/. It is showing csv data and welcome note as exepected.
  
  
     
