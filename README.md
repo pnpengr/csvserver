@@ -73,6 +73,55 @@ docker pull prom/prometheus:v2.22.0
         docker-compose up -d
         docker ps
 ### Executed above command successfully and able to access page on http://10.0.0.12:9393/. It is showing csv data and welcome note as exepected.
+
+### PART III
+#### 1: Delete any containers running from the last part.
+        docker rmi infracloudio/csvserver:latest
+        
+#### 2: Add Prometheus container (prom/prometheus:v2.22.0) to the docker-compose.yaml form part II.
+
+         version: "3.9"
+         services:
+           #Part - II
+           csvserver:
+             hostname: csvserver
+             image: infracloudio/csvserver:latest
+             ports:
+               - "9393:9300"
+             volumes:
+               - ./inputFile:/csvserver/inputdata
+             environment:
+               - CSVSERVER_BORDER=Orange
+         
+           # Part - II
+           prometheus:
+             hostname: prometheus
+             image: prom/prometheus:v2.22.0
+             ports:
+               - "9090:9090"
+             volumes:
+               - ./prometheus:/etc/prometheus/
+             command:
+                - '--web.enable-lifecycle'
+                - '--config.file=/etc/prometheus/prometheus.yaml'  
+                
+#### 3: Configure Prometheus to collect data from our application at <application>:<port>/metrics endpoint. (Where the <port> is the port from I.5)
+       ## Created prometheus/prometheus.yml
+          global:
+            scrape_interval: 30s
+            scrape_timeout: 10s
+
+          scrape_configs:
+            - job_name: csvserver
+            metrics_path: /metrics
+            static_configs:
+            - targets:
+                - 'prometheus:9090'
+                - 'csvserver:9300'
+    
+#### 4: Make sure that Prometheus is accessible at http://localhost:9090 on the host.      
+        Type csvserver_records in the query box of Prometheus. Click on Execute and then switch to the Graph tab.
  
- 
+         http://10.0.0.12:9090/graph?g0.range_input=1h&g0.expr=csvserver_records&g0.tab=0 -- My local system able to view the Graph.
+    
     
